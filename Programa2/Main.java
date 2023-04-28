@@ -2,13 +2,13 @@ package Programa2;
 
 import db.DB;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class Main {
+
+    /*  INSERINDO DADOS NO SQL*/
     public static void main(String[] args) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -22,7 +22,8 @@ public class Main {
                     "INSERT INTO seller "
                     + "(Name, Email, BirthDate, BaseSalary, DepartmentId)"
                     + "VALUES"
-                    + "(?, ?, ?, ?, ?)");
+                    + "(?, ?, ?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS);
             st.setString(1, "Carl Purple");
             st.setString(2,"carl@gmail.com");
             st.setDate(3,new java.sql.Date(sdf.parse("22/04/1985").getTime()));
@@ -31,7 +32,17 @@ public class Main {
 
            int rowsAffected = st.executeUpdate();
 
-            System.out.println("pronto! Linhas afetadas: " + rowsAffected);
+           if(rowsAffected > 0){
+               ResultSet rs = st.getGeneratedKeys();
+               while (rs.next()){
+                   int id = rs.getInt(1);
+                   System.out.println("pront! Id = " + id);
+               }
+           }
+           else {
+               System.out.println("Nenhuma linha alterada: ");
+
+           }
         }
 
         catch (SQLException e) {
